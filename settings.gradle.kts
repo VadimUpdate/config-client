@@ -1,1 +1,1 @@
-rootProject.name = "demo-client"
+rootProject.name = "config-client"

@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit
 class ConfigRefresher {
 
     private val client = HttpClient.newHttpClient()
-    private val refreshUri = URI.create("http://localhost:8081/actuator/refresh")
+    private val refreshUri = URI.create("http://config-client:8081/actuator/refresh")
 
     @PostConstruct
     fun startAutoRefresh() {
@@ -26,11 +26,14 @@ class ConfigRefresher {
                     .POST(HttpRequest.BodyPublishers.noBody())
                     .build()
 
+                println("Sending POST to $refreshUri")
                 val response = client.send(request, HttpResponse.BodyHandlers.ofString())
+                println("Response status: ${response.statusCode()}, body: ${response.body()}")
                 println("Refreshed config: ${response.body()}")
             } catch (ex: Exception) {
-                println(" Failed to refresh config: ${ex.message}")
+                println("Failed to refresh config: ${ex.message}")
+                ex.printStackTrace()
             }
-        }, 0, 15, TimeUnit.SECONDS)
+        }, 10, 15, TimeUnit.SECONDS)
     }
 }
